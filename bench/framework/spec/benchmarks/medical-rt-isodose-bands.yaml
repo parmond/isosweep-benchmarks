@@ -1,0 +1,12 @@
+# Benchmark spec (filled bands; same field and levels as medical-rt-isodose) — see ../global.yaml for the policy this inherits.
+id: medical-rt-isodose-bands
+title: Adaptive RT isodose display — filled bands
+kind: bands2d
+use_case: medical-imaging
+published: true
+data: {generator: fieldgen, profile: medical_blob, size: 512, seed: 42}
+levels: {count: 15}
+tools: [isosweep_bands_1t, isosweep_bands_mt, isosweep_c_bands_1t, isosweep_c_bands_mt, gdal_bands_master, gdal_bands_3.13, contourpy_filled_serial, contourpy_filled_threaded, contour_rs_bands]
+rationale: Industry testcase from bench/testcases/medical-rt-isodose.md (deterministic synthetic field).
+levels_label: 16 levels (interval 1/16)
+data_label: deterministic synthetic field 'medical_blob' (bench/testcases/catalog.tsv)

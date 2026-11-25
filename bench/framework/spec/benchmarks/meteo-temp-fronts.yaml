@@ -1,0 +1,12 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: meteo-temp-fronts
+title: HRRR temperature frontal analysis
+kind: contour2d
+use_case: weather-climate
+published: true
+data: {generator: fieldgen, profile: meteo_temperature, size: 1799, seed: 42}
+levels: {count: 25}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Industry testcase from bench/testcases/meteo-temp-fronts.md (deterministic synthetic field).
+levels_label: 26 levels (interval 2.5)
+data_label: deterministic synthetic field 'meteo_temperature' (bench/testcases/catalog.tsv)

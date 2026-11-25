@@ -1,0 +1,15 @@
+# Benchmark spec (filled bands; same field and levels as hrrr-mslp) — see ../global.yaml for the policy this inherits.
+id: hrrr-mslp-bands
+title: HRRR 3 km CONUS sea-level pressure (isobars) — filled bands
+kind: bands2d
+use_case: weather-climate
+published: true
+data:
+  dataset: hrrr_mslp.f32
+  sha256: 13a5be102d1c8511576dd84da57a0e9b6b512421d8c4b4f5ed381a2f5a198d2b
+  raw_shape: [1059, 1799]
+levels: {interval: 200}
+tools: [isosweep_bands_1t, isosweep_bands_mt, isosweep_c_bands_1t, isosweep_c_bands_mt, gdal_bands_master, gdal_bands_3.13, contourpy_filled_serial, contourpy_filled_threaded, contour_rs_bands]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 2 hPa
+data_label: NOAA HRRR 2026-11-18 00z, MSLMA (NOAA Open Data Dissemination)

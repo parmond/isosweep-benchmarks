@@ -1,0 +1,15 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: gfs-t2m
+title: GFS 0.25° global 2 m temperature (isotherms)
+kind: contour2d
+use_case: weather-climate
+published: true
+data:
+  dataset: gfs_t2m.f32
+  sha256: bb5dac83381c46a042ca78975b07aaee21a432053df6edfa81aeeaa89d67902e
+  raw_shape: [721, 1440]
+levels: {interval: 1}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 1 °C
+data_label: NOAA GFS 2026-11-18 00z analysis, TMP 2 m (NOAA Open Data Dissemination)

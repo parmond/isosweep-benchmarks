@@ -1,0 +1,15 @@
+# Benchmark spec (filled bands; same field and levels as gfs-mslp) — see ../global.yaml for the policy this inherits.
+id: gfs-mslp-bands
+title: GFS 0.25° global sea-level pressure (isobars) — filled bands
+kind: bands2d
+use_case: weather-climate
+published: true
+data:
+  dataset: gfs_prmsl.f32
+  sha256: 9a9b5e02ef419a122bdedde676c36b4ad037f639ec36233f8a0cea04a4f4cedb
+  raw_shape: [721, 1440]
+levels: {interval: 400}
+tools: [isosweep_bands_1t, isosweep_bands_mt, isosweep_c_bands_1t, isosweep_c_bands_mt, gdal_bands_master, gdal_bands_3.13, contourpy_filled_serial, contourpy_filled_threaded, contour_rs_bands]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 4 hPa
+data_label: NOAA GFS 2026-11-18 00z analysis, PRMSL (NOAA Open Data Dissemination)

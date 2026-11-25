@@ -1,0 +1,12 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: gis-web-tile
+title: On-demand web map contour tile
+kind: contour2d
+use_case: dem-contours
+published: true
+data: {generator: fieldgen, profile: terrain_alpine, size: 256, seed: 42}
+levels: {count: 25}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Industry testcase from bench/testcases/gis-web-tile.md (deterministic synthetic field).
+levels_label: 25 levels
+data_label: deterministic synthetic field 'terrain_alpine' (bench/testcases/catalog.tsv)

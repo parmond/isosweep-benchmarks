@@ -1,0 +1,13 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: vol-gyroid-512
+title: gyroid isosurface, 512³
+kind: surface3d
+use_case: isosurfaces
+published: false
+data: {generator: analytic3d, field: gyroid, size: 512}
+levels:
+  values: [0.0]
+tools: [isosweep_iso_1t, isosweep_iso_mt, vtk_fe3d_1t, vtk_fe3d_mt, pymcubes]
+rationale: Internal 3D comparison; not published (see BENCHMARK_AUDIT_2026-11.md).
+levels_label: 1 isosurface
+data_label: analytic float32 volume

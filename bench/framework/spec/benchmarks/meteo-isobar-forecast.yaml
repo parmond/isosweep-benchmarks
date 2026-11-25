@@ -1,0 +1,12 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: meteo-isobar-forecast
+title: GFS isobar forecast loop
+kind: contour2d
+use_case: weather-climate
+published: true
+data: {generator: fieldgen, profile: meteo_pressure, size: 1440, seed: 42}
+levels: {count: 17}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Industry testcase from bench/testcases/meteo-isobar-forecast.md (deterministic synthetic field).
+levels_label: 16 levels (interval 6)
+data_label: deterministic synthetic field 'meteo_pressure' (bench/testcases/catalog.tsv)

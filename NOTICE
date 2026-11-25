@@ -1,0 +1,25 @@
+isosweep benchmark harness
+Copyright 2026 Parmond AB (Sweden, org.nr 559595-9718)
+
+This repository (the harness, specifications, workers for the libraries
+compared, the field generator, scripts and published results) is licensed
+under the Apache License, Version 2.0 (see LICENSE).
+
+isosweep itself (the libisosweep C library, the isocurves Python package and
+the isosweep-contour command-line tool) is commercial software of Parmond AB.
+It is not part of this repository and not covered by this licence; it is
+available for evaluation at https://www.isosweep.com/evaluate.
+
+Third-party data fetched by datasets/fetch_datasets.py is not redistributed
+here and remains under its own terms:
+- Copernicus GLO-30 DEM: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and
+  Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA.
+- GMRT (Global Multi-Resolution Topography): Ryan, W.B.F. et al. (2009),
+  Global Multi-Resolution Topography synthesis, Geochem. Geophys. Geosyst.,
+  10, Q03014, doi:10.1029/2008GC002332. CC BY 4.0.
+- NOAA GFS and HRRR model output: NOAA, public domain (NOAA Open Data
+  Dissemination).
+
+The libraries benchmarked (GDAL, VTK, ContourPy, scikit-image, contour-rs) are
+installed by the setup script from their own distributions under their own
+licences; their names are trademarks of their owners.

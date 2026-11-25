@@ -1,0 +1,161 @@
+>>> dem-tile-512  shape=[512, 512]  levels=168
+    reused from the store: 5 of 16 configurations
+    syscheck gdal_master/cg_callback          ok (4 syscalls in window)
+    syscheck gdal_master/generate_ex          ok (21 syscalls in window)
+    syscheck gdal_3.13/cg_callback            ok (4 syscalls in window)
+    syscheck gdal_3.13/generate_ex            ok (5 syscalls in window)
+    syscheck vtk_fe2d_1t/sequential           ok (7 syscalls in window)
+    syscheck vtk_fe2d_mt/smp                  ok (72050 syscalls in window)
+    syscheck contourpy_serial/serial          ok (37 syscalls in window)
+    syscheck contourpy_serial/serial_reused   ok (27 syscalls in window)
+    syscheck contourpy_threaded/threaded      ok (46823 syscalls in window)
+    syscheck contourpy_threaded/threaded_reused ok (46475 syscalls in window)
+    syscheck skimage/per_level                ok (0 syscalls in window)
+    gdal_master/cg_callback               69.882 ms  cv=0.003 loops=2  engine=-
+    anchor gdal_master/cg_callback: 69.882 ms vs stored 69.520 ms (+0.52%)
+    gdal_master/generate_ex              101.321 ms  cv=0.005 loops=1  engine=-
+    anchor gdal_master/generate_ex: 101.321 ms vs stored 101.279 ms (+0.04%)
+    gdal_3.13/cg_callback                 68.912 ms  cv=0.005 loops=2  engine=-
+    anchor gdal_3.13/cg_callback: 68.912 ms vs stored 68.836 ms (+0.11%)
+    gdal_3.13/generate_ex                 99.788 ms  cv=0.002 loops=2  engine=-
+    anchor gdal_3.13/generate_ex: 99.788 ms vs stored 99.178 ms (+0.62%)
+    vtk_fe2d_1t/sequential               143.976 ms  cv=0.014 loops=1  engine=-
+    anchor vtk_fe2d_1t/sequential: 143.976 ms vs stored 160.798 ms (-10.46%)
+    vtk_fe2d_mt/smp                       75.467 ms  cv=0.014 loops=2  engine=-
+    anchor vtk_fe2d_mt/smp: 75.467 ms vs stored 90.842 ms (-16.93%)
+    contourpy_serial/serial              185.028 ms  cv=0.004 loops=1  engine=-
+    anchor contourpy_serial/serial: 185.028 ms vs stored 186.357 ms (-0.71%)
+    contourpy_serial/serial_reused       183.412 ms  cv=0.005 loops=1  engine=-
+    anchor contourpy_serial/serial_reused: 183.412 ms vs stored 186.154 ms (-1.47%)
+    contourpy_threaded/threaded           84.890 ms  cv=0.013 loops=2  engine=-
+    anchor contourpy_threaded/threaded: 84.890 ms vs stored 85.607 ms (-0.84%)
+    contourpy_threaded/threaded_reused      83.857 ms  cv=0.011 loops=2  engine=-
+    anchor contourpy_threaded/threaded_reused: 83.857 ms vs stored 83.705 ms (+0.18%)
+    skimage/per_level                    515.177 ms  cv=0.003 loops=1  engine=-
+    anchor skimage/per_level: 515.177 ms vs stored 525.770 ms (-2.01%)
+>>> gfs-mslp  shape=[721, 1440]  levels=33
+    reused from the store: 5 of 16 configurations
+    syscheck gdal_master/cg_callback          ok (4 syscalls in window)
+    syscheck gdal_master/generate_ex          ok (12 syscalls in window)
+    syscheck gdal_3.13/cg_callback            ok (4 syscalls in window)
+    syscheck gdal_3.13/generate_ex            ok (12 syscalls in window)
+    syscheck vtk_fe2d_1t/sequential           ok (0 syscalls in window)
+    syscheck vtk_fe2d_mt/smp                  ok (82283 syscalls in window)
+    syscheck contourpy_serial/serial          ok (19 syscalls in window)
+    syscheck contourpy_serial/serial_reused   ok (0 syscalls in window)
+    syscheck contourpy_threaded/threaded      ok (24841 syscalls in window)
+    syscheck contourpy_threaded/threaded_reused ok (33005 syscalls in window)
+    syscheck skimage/per_level                ok (40 syscalls in window)
+    gdal_master/cg_callback               54.183 ms  cv=0.001 loops=2  engine=-
+    anchor gdal_master/cg_callback: 54.183 ms vs stored 54.199 ms (-0.03%)
+    gdal_master/generate_ex               76.433 ms  cv=0.003 loops=2  engine=-
+    anchor gdal_master/generate_ex: 76.433 ms vs stored 76.351 ms (+0.11%)
+    gdal_3.13/cg_callback                 53.683 ms  cv=0.002 loops=2  engine=-
+    anchor gdal_3.13/cg_callback: 53.683 ms vs stored 53.667 ms (+0.03%)
+    gdal_3.13/generate_ex                 73.840 ms  cv=0.003 loops=2  engine=-
+    anchor gdal_3.13/generate_ex: 73.840 ms vs stored 73.934 ms (-0.13%)
+    vtk_fe2d_1t/sequential               106.925 ms  cv=0.011 loops=1  engine=-
+    anchor vtk_fe2d_1t/sequential: 106.925 ms vs stored 114.475 ms (-6.60%)
+    vtk_fe2d_mt/smp                       48.155 ms  cv=0.015 loops=3  engine=-
+    anchor vtk_fe2d_mt/smp: 48.155 ms vs stored 55.014 ms (-12.47%)
+    contourpy_serial/serial              144.733 ms  cv=0.010 loops=1  engine=-
+    anchor contourpy_serial/serial: 144.733 ms vs stored 145.487 ms (-0.52%)
+    contourpy_serial/serial_reused       134.740 ms  cv=0.011 loops=1  engine=-
+    anchor contourpy_serial/serial_reused: 134.740 ms vs stored 134.647 ms (+0.07%)
+    contourpy_threaded/threaded           42.065 ms  cv=0.009 loops=3  engine=-
+    anchor contourpy_threaded/threaded: 42.065 ms vs stored 41.924 ms (+0.33%)
+    contourpy_threaded/threaded_reused      31.112 ms  cv=0.009 loops=4  engine=-
+    anchor contourpy_threaded/threaded_reused: 31.112 ms vs stored 31.438 ms (-1.04%)
+    skimage/per_level                    308.507 ms  cv=0.004 loops=1  engine=-
+    anchor skimage/per_level: 308.507 ms vs stored 311.647 ms (-1.01%)
+>>> medical-rt-isodose  shape=[512, 512]  levels=16
+    reused from the store: 5 of 16 configurations
+    syscheck gdal_master/cg_callback          ok (26 syscalls in window)
+    syscheck gdal_master/generate_ex          ok (28 syscalls in window)
+    syscheck gdal_3.13/cg_callback            ok (28 syscalls in window)
+    syscheck gdal_3.13/generate_ex            ok (28 syscalls in window)
+    syscheck vtk_fe2d_1t/sequential           ok (1 syscalls in window)
+    syscheck vtk_fe2d_mt/smp                  ok (71263 syscalls in window)
+    syscheck contourpy_serial/serial          ok (47 syscalls in window)
+    syscheck contourpy_serial/serial_reused   ok (0 syscalls in window)
+    syscheck contourpy_threaded/threaded      ok (22113 syscalls in window)
+    syscheck contourpy_threaded/threaded_reused ok (28224 syscalls in window)
+    syscheck skimage/per_level                ok (0 syscalls in window)
+    gdal_master/cg_callback                7.705 ms  cv=0.001 loops=13  engine=-
+    anchor gdal_master/cg_callback: 7.705 ms vs stored 7.703 ms (+0.02%)
+    gdal_master/generate_ex                7.440 ms  cv=0.005 loops=14  engine=-
+    anchor gdal_master/generate_ex: 7.440 ms vs stored 7.442 ms (-0.03%)
+    gdal_3.13/cg_callback                  7.634 ms  cv=0.001 loops=14  engine=-
+    anchor gdal_3.13/cg_callback: 7.634 ms vs stored 7.635 ms (-0.01%)
+    gdal_3.13/generate_ex                  7.092 ms  cv=0.002 loops=14  engine=-
+    anchor gdal_3.13/generate_ex: 7.092 ms vs stored 7.084 ms (+0.11%)
+    vtk_fe2d_1t/sequential                 9.924 ms  cv=0.006 loops=10  engine=-
+    anchor vtk_fe2d_1t/sequential: 9.924 ms vs stored 10.058 ms (-1.33%)
+    vtk_fe2d_mt/smp                        4.948 ms  cv=0.049 loops=20  engine=-
+    anchor vtk_fe2d_mt/smp: 4.948 ms vs stored 5.034 ms (-1.70%)
+    contourpy_serial/serial               19.595 ms  cv=0.003 loops=6  engine=-
+    anchor contourpy_serial/serial: 19.595 ms vs stored 19.654 ms (-0.30%)
+    contourpy_serial/serial_reused        16.883 ms  cv=0.004 loops=6  engine=-
+    anchor contourpy_serial/serial_reused: 16.883 ms vs stored 16.921 ms (-0.22%)
+    contourpy_threaded/threaded           10.649 ms  cv=0.011 loops=10  engine=-
+    anchor contourpy_threaded/threaded: 10.649 ms vs stored 10.699 ms (-0.47%)
+    contourpy_threaded/threaded_reused       7.720 ms  cv=0.011 loops=13  engine=-
+    anchor contourpy_threaded/threaded_reused: 7.720 ms vs stored 7.781 ms (-0.78%)
+    skimage/per_level                     30.534 ms  cv=0.002 loops=4  engine=-
+    anchor skimage/per_level: 30.534 ms vs stored 31.122 ms (-1.89%)
+    anchors: median drift -0.30% over 33 configurations (max 3.0%)
+>>> dem-alps-mosaic  shape=[7200, 7200]  levels=89
+    reused from the store: 16 of 16 configurations
+>>> dem-alps-tile  shape=[3600, 3600]  levels=204
+    reused from the store: 16 of 16 configurations
+>>> dem-tile-512-bands  shape=[512, 512]  levels=168
+    reused from the store: 11 of 11 configurations
+>>> gfs-mslp-bands  shape=[721, 1440]  levels=33
+    reused from the store: 11 of 11 configurations
+>>> gfs-t2m  shape=[721, 1440]  levels=88
+    reused from the store: 16 of 16 configurations
+>>> gis-national-scale  shape=[8000, 8000]  levels=25
+    reused from the store: 16 of 16 configurations
+>>> gis-srtm-tile  shape=[3601, 3601]  levels=25
+    reused from the store: 16 of 16 configurations
+>>> gis-web-tile  shape=[256, 256]  levels=25
+    reused from the store: 16 of 16 configurations
+>>> gmrt-bathy  shape=[2063, 1823]  levels=37
+    reused from the store: 16 of 16 configurations
+>>> hrrr-mslp  shape=[1059, 1799]  levels=23
+    reused from the store: 16 of 16 configurations
+>>> hrrr-mslp-bands  shape=[1059, 1799]  levels=23
+    reused from the store: 11 of 11 configurations
+>>> hrrr-t2m  shape=[1059, 1799]  levels=48
+    reused from the store: 16 of 16 configurations
+>>> medical-rt-isodose-bands  shape=[512, 512]  levels=16
+    reused from the store: 11 of 11 configurations
+>>> medical-vasculature  shape=[1024, 1024]  levels=10
+    reused from the store: 16 of 16 configurations
+>>> meteo-isobar-forecast  shape=[1440, 1440]  levels=16
+    reused from the store: 16 of 16 configurations
+>>> meteo-temp-fronts  shape=[1799, 1799]  levels=26
+    reused from the store: 16 of 16 configurations
+>>> realtime-interactive  shape=[1024, 1024]  levels=25
+    reused from the store: 16 of 16 configurations
+>>> semi-cmp-wafer  shape=[1024, 1024]  levels=50
+    reused from the store: 16 of 16 configurations
+>>> semi-contacts-array  shape=[1024, 1024]  levels=9
+    reused from the store: 16 of 16 configurations
+>>> semi-opc-pvband  shape=[2048, 2048]  levels=9
+    reused from the store: 16 of 16 configurations
+>>> semi-tcad-doping  shape=[512, 512]  levels=11
+    reused from the store: 16 of 16 configurations
+>>> vol-gyroid-256  shape=[256, 256, 256]  levels=1
+    reused from the store: 5 of 5 configurations
+>>> vol-gyroid-512  shape=[512, 512, 512]  levels=1
+    reused from the store: 5 of 5 configurations
+>>> vol-smooth-256  shape=[256, 256, 256]  levels=1
+    reused from the store: 5 of 5 configurations
+>>> vol-smooth-512  shape=[512, 512, 512]  levels=1
+    reused from the store: 5 of 5 configurations
+>>> vol-sphere-256  shape=[256, 256, 256]  levels=1
+    reused from the store: 5 of 5 configurations
+>>> vol-sphere-512  shape=[512, 512, 512]  levels=1
+    reused from the store: 5 of 5 configurations
+=== done: /home/ubuntu/fw_results

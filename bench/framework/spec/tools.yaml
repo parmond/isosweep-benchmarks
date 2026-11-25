@@ -1,0 +1,471 @@
+# isosweep benchmark framework — TOOLS.
+#
+# adapters: how a tool is driven (pinned version, artifacts hashed into every
+#   run, the calls allowed inside the timed region, best-configuration evidence).
+# report_tools: the names that appear in results and on the website. Each
+#   report tool is one or more measured variants; with select: fastest_variant
+#   the published value is the fastest variant (each competitor at its best).
+schema: isosweep-bench/1
+
+adapters:
+  isosweep_contour:
+    kind: ours
+    impl: {python: "isobench.adapters:IsosweepContour"}
+    product_surface: "Python package isocurves (isocurves.contour), the shipped binding over the C engine"
+    version: {pin: "0.4.0"}
+    artifacts: ["python/isocurves/_core*.so"]
+    compute_allowlist: ["isocurves.contour"]
+    output_class: polylines.assembled
+    family: isosweep
+    coords: xy
+    precision: float32
+    work:
+      input_dtype: float32
+      result: "Python list of Curve objects (x, y float32 arrays, level, open/closed, hill/hole)"
+      assembly: "full: every contour one polyline over the whole grid"
+      extra_outputs: ["hill/hole flag per line", "open/closed flag per line"]
+      differences:
+        - {what: "computes in float32 (input, crossings, coordinates)", direction: favours_isosweep,
+           measured_by: W3_accuracy, bound: "max vertex position error <= 2e-3 cells (W3 limit for float32 coordinates)"}
+        - {what: "float32 output coordinates (competitors: float64, VTK float32)", direction: favours_isosweep,
+           measured_by: variant, bound: "isosweep_1t_f64 (float64 coordinates) is measured on every line benchmark and disclosed next to isosweep_1t"}
+        - {what: "extra outputs: hill/hole and open/closed flags", direction: favours_competitor, measured_by: W6}
+    notes: "Receives float32 (its native input dtype), converted untimed like every tool's input; computes in float32 (accuracy measured: W3). Builds one Python Curve object per contour inside the timed call (timed; W6 reports its share)."
+
+  isosweep_c_worker:
+    kind: ours
+    impl: {worker: "workers/isosweep_worker.c"}
+    product_surface: "libisosweep C API (isosweep_contour), statically linked: what a C licensee ships"
+    version: {pin: "0.4.0"}
+    artifacts: ["{bin}/isosweep_worker"]
+    compute_allowlist: ["isosweep_contour"]
+    output_class: polylines.assembled
+    family: isosweep
+    coords: xy
+    precision: float32
+    work:
+      input_dtype: float64
+      result: "opaque isosweep_result_t: curves with float32 x/y, level, closed, hill (read by accessors, no copy)"
+      assembly: "full: every contour one polyline over the whole grid"
+      extra_outputs: ["hill/hole flag per line", "open/closed flag per line"]
+      differences:
+        - {what: "handed the float64 field; converts it to float32 untimed at LOAD (the library's input type)", direction: favours_isosweep,
+           measured_by: W3_accuracy, bound: "max vertex position error <= 2e-3 cells (W3 limit for float32 coordinates)"}
+        - {what: "result read in place (no copy into another container)", direction: favours_isosweep, measured_by: variant,
+           bound: "the Python surface (isosweep_1t / _mt), which copies every curve into numpy, is measured on the same benchmarks"}
+    notes: "C to C counterpart of GDAL's callback API: the call a C caller makes, nothing else timed. The previous result is freed before the clock starts (as every worker)."
+
+  isosweep_c_bands_worker:
+    kind: ours
+    impl: {worker: "workers/isosweep_worker.c"}
+    product_surface: "libisosweep C API (isosweep_contour, ISOSWEEP_BANDS), statically linked"
+    version: {pin: "0.4.0"}
+    artifacts: ["{bin}/isosweep_worker"]
+    compute_allowlist: ["isosweep_contour"]
+    output_class: polygons.bands
+    family: isosweep
+    coords: xy
+    precision: float32
+    work:
+      input_dtype: float64
+      result: "opaque isosweep_result_t: polygons (exterior + holes) per band as flat float32 arrays"
+      assembly: "full: rings nested into polygons with holes"
+      differences:
+        - {what: "handed the float64 field; converts it to float32 untimed at LOAD", direction: favours_isosweep,
+           measured_by: B3_accuracy, bound: "max vertex position error <= 2e-3 cells (W3 limit for float32 coordinates)"}
+
+  isosweep_isosurface:
+    kind: ours
+    impl: {python: "isobench.adapters:IsosweepIsosurface"}
+    product_surface: "Python package isocurves (isocurves.isosurface)"
+    threads_reported: false     # mc_sweep caps its slab count on small volumes, so it may run
+                                # fewer threads than requested (reported honestly, but not equal to
+                                # the request: exempt from C10's equality); 3D is not published
+    version: {pin: "0.4.0"}
+    artifacts: ["python/isocurves/_core*.so"]
+    compute_allowlist: ["isocurves.isosurface"]
+    output_class: mesh.triangles
+
+  contourpy:
+    kind: competitor
+    impl: {python: "isobench.adapters:ContourPy"}
+    version: {pin: "1.4.0"}
+    compute_allowlist: ["contourpy.contour_generator", "*.multi_lines"]
+    output_class: polylines.assembled
+    family: contourpy
+    coords: xy
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "per level: chunked float64 point arrays + offsets (LineType.ChunkCombinedOffset)"
+      assembly: "serial: full; threaded: lines are not joined across chunk boundaries"
+      differences:
+        - {what: "threaded: lines split at chunk boundaries (less joining)", direction: favours_competitor, measured_by: W2_unjoined_ends}
+        - {what: "reused generator: O(n) setup outside the timed call", direction: favours_competitor, measured_by: variant}
+    evidence:
+      - "https://contourpy.readthedocs.io/en/latest/user_guide/calculate/threads.html  (threaded algorithm; ChunkCombined* types scale best)"
+      - "https://contourpy.readthedocs.io/en/latest/benchmarks/  (serial is the fastest single-thread algorithm)"
+      - "https://contourpy.readthedocs.io/en/latest/changelog.html  (1.4.0, 2026-09-11, current release)"
+
+  vtk_flying_edges_2d:
+    kind: competitor
+    impl: {python: "isobench.adapters:VtkFlyingEdges2D"}
+    version: {pin: "9.6.2"}
+    compute_allowlist: ["self.fe.Modified", "self.stripper.Update", "self.stripper.GetOutput"]
+    output_class: polylines.assembled
+    family: vtk
+    coords: xy
+    precision: float32
+    work:
+      input_dtype: float64
+      result: "vtkPolyData: float32 points + polyline cells (no level per line)"
+      assembly: "vtkStripper (MaximumLength unlimited); a few lines stay unjoined"
+      differences:
+        - {what: "some polylines left unjoined", direction: favours_competitor, measured_by: W2_unjoined_ends}
+        - {what: "output points stored as float32", direction: favours_competitor, measured_by: W3_accuracy}
+        - {what: "no level attribute per line", direction: favours_competitor, measured_by: W5}
+    evidence:
+      - "https://www.kitware.com/really-fast-isocontouring/  (Flying Edges is VTK's fastest isocontouring filter)"
+      - "https://vtk.org/doc/nightly/html/classvtkFlyingEdges2D.html"
+    notes: "vtkImageData + filter pipeline built in prepare (zero-copy wrap, O(1)). vtkStripper joins segments into polylines (required for like-for-like output; MaximumLength unlimited so lines are fully joined) and is timed."
+
+  vtk_flying_edges_3d:
+    kind: competitor
+    impl: {python: "isobench.adapters:VtkFlyingEdges3D"}
+    version: {pin: "9.6.2"}
+    compute_allowlist: ["self.fe.Modified", "self.fe.Update", "self.fe.GetOutput"]
+    output_class: mesh.triangles
+
+  skimage_find_contours:
+    kind: competitor
+    impl: {python: "isobench.adapters:SkimageFindContours"}
+    version: {pin: "0.26.0"}
+    compute_allowlist: ["find_contours"]
+    output_class: polylines.assembled
+    family: skimage
+    coords: yx
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "per level: list of (n,2) float64 arrays (row, col)"
+      assembly: "full"
+
+  skimage_marching_cubes:
+    kind: competitor
+    impl: {python: "isobench.adapters:SkimageMarchingCubes"}
+    version: {pin: "0.26.0"}
+    compute_allowlist: ["marching_cubes"]
+    output_class: mesh.triangles
+
+  pymcubes:
+    kind: competitor
+    impl: {python: "isobench.adapters:PyMCubes"}
+    version: {pin: "0.1.6"}
+    compute_allowlist: ["mcubes.marching_cubes"]
+    output_class: mesh.triangles
+    notes: "PyMCubes requires float64 input and does not convert itself: converted untimed in prepare (favours PyMCubes)."
+
+  gdal_worker:
+    kind: competitor
+    impl: {worker: "workers/gdal_worker.c"}
+    version: {pin_by_lib: {"3.13.3": "3.13.3", "master": "3.14.0dev-fedfd3ec89"}}
+    artifacts: ["{bin}/gdal_worker_{lib}", "{gdal_prefix_{lib}}/lib/libgdal*"]
+    compute_allowlist: ["GDAL_CG_Create", "GDAL_CG_FeedLine", "GDAL_CG_Destroy",            # callback API
+                        "realloc", "memcpy",                                                  # callback copies points
+                        "GDALContourGenerateEx"]                                              # generate_ex API
+    output_class: polylines.assembled
+    family: gdal
+    coords: "xy+0.5"
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "callback: float64 points copied into a result buffer; generate_ex: OGR features (ID, ELEV) in an in-memory layer"
+      assembly: "full"
+      differences:
+        - {what: "pixel-is-area: lines extend half a cell beyond the outer pixel centres at the raster border",
+           direction: favours_isosweep, measured_by: clipped_length,
+           bound: "clipped length <= 1% of total length; border work O(perimeter) vs O(cells)"}
+        - {what: "generate_ex: builds OGR features with attributes", direction: favours_isosweep, measured_by: variant,
+           bound: "published value is the faster of callback and generate_ex"}
+    evidence:
+      - "https://gdal.org/en/stable/api/gdal_alg.html  (GDAL_CG_Create / GDAL_CG_FeedLine callback API; GDALContourGenerateEx)"
+      - "https://github.com/OSGeo/gdal/pull/14983  (master: near-linear polygon ring appender)"
+    notes: "Both versions built from source with identical options. callback = pure computation, points copied into a result buffer (as any caller must); generate_ex = native API into an in-memory layer (native result type), the layer reset before each call outside the clock. Published value = faster of the two."
+
+  contour_rs_worker:
+    kind: competitor
+    impl: {worker: "workers/rs_worker/src/main.rs"}
+    version: {pin: "0.13.1"}
+    artifacts: ["{bin}/rs_worker"]
+    compute_allowlist: ["b.lines", "b.isobands", "*.unwrap"]   # one worker file: both modes' timed block
+    output_class: polylines.assembled
+    family: contour_rs
+    coords: "xy+0.5"
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "per level: MultiLineString (geo-types), float64"
+      assembly: "full; also traces raster-edge segments (closed >=level rings): rings class only"
+    evidence: ["https://docs.rs/contour/0.13.1/contour/  (ContourBuilder::lines = isolines)"]
+
+  # ---- filled bands (class polygons.bands): every band between consecutive levels
+  #      plus both outer bands, as polygons with holes
+  isosweep_filled:
+    kind: ours
+    impl: {python: "isobench.adapters:IsosweepFilled"}
+    product_surface: "Python package isocurves (isocurves.filled), the shipped binding over the C engine"
+    version: {pin: "0.4.0"}
+    artifacts: ["python/isocurves/_core*.so"]
+    compute_allowlist: ["isocurves.filled"]
+    output_class: polygons.bands
+    family: isosweep
+    coords: xy
+    precision: float32
+    work:
+      input_dtype: float32
+      result: "FilledResult: flat numpy arrays (band per polygon, ring and vertex offsets, float32 x/y); Band objects (exterior Ring + hole Rings) are made on access, outside the timed call (0.4: as ContourPy's arrays)"
+      assembly: "full: rings nested into polygons with holes"
+      differences:
+        - {what: "computes in float32 (input, crossings, coordinates)", direction: favours_isosweep,
+           measured_by: B3_accuracy, bound: "max vertex position error <= 2e-3 cells (W3 limit for float32 coordinates)"}
+  contourpy_filled:
+    kind: competitor
+    impl: {python: "isobench.adapters:ContourPyFilled"}
+    version: {pin: "1.4.0"}
+    compute_allowlist: ["contourpy.contour_generator", "*.multi_filled"]
+    output_class: polygons.bands
+    family: contourpy
+    coords: xy
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "per band: float64 points + ring offsets + polygon offsets (OuterOffset / ChunkCombinedOffsetOffset)"
+      assembly: "full: polygons with holes (serial); threaded: polygons split at chunk boundaries"
+      differences:
+        - {what: "threaded: polygons split at chunk boundaries (less assembly)", direction: favours_competitor, measured_by: B2_band_polygons}
+        - {what: "reused generator: O(n) setup outside the timed call", direction: favours_competitor, measured_by: variant}
+    evidence:
+      - "https://contourpy.readthedocs.io/en/latest/user_guide/calculate/fill_type.html  (OuterOffset: polygons with holes)"
+      - "https://contourpy.readthedocs.io/en/latest/api.html  (multi_filled: all bands in one call)"
+  gdal_worker_polygonize:
+    kind: competitor
+    impl: {worker: "workers/gdal_worker.c"}
+    version: {pin_by_lib: {"3.13.3": "3.13.3", "master": "3.14.0dev-fedfd3ec89"}}
+    artifacts: ["{bin}/gdal_worker_{lib}", "{gdal_prefix_{lib}}/lib/libgdal*"]
+    compute_allowlist: ["GDAL_CG_Create", "GDAL_CG_FeedLine", "GDAL_CG_Destroy", "realloc", "memcpy",
+                        "GDALContourGenerateEx"]       # one worker file: every timed block in it is audited
+    output_class: polygons.bands
+    family: gdal
+    coords: "xy+0.5"
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "OGR MultiPolygon features (ID, EMIN, EMAX) in an in-memory layer"
+      assembly: "full: polygons with holes"
+      differences:
+        - {what: "pixel-is-area: polygons extend half a cell beyond the outer pixel centres", direction: favours_isosweep,
+           measured_by: clipped_area, bound: "clipped area <= 1% of the domain; border work O(perimeter) vs O(cells)"}
+        - {what: "builds OGR features with attributes", direction: favours_isosweep, measured_by: none,
+           bound: "GDAL's only polygon API; inherent to the product surface"}
+    evidence:
+      - "https://gdal.org/en/stable/programs/gdal_contour.html  (-p polygonize; FIXED_LEVELS MIN/MAX)"
+  contour_rs_bands_worker:
+    kind: competitor
+    impl: {worker: "workers/rs_worker/src/main.rs"}
+    version: {pin: "0.13.1"}
+    artifacts: ["{bin}/rs_worker"]
+    compute_allowlist: ["b.isobands", "b.lines", "*.unwrap"]   # one worker file: both modes' timed block
+    output_class: polygons.bands
+    family: contour_rs
+    coords: "xy+0.5"
+    precision: float64
+    work:
+      input_dtype: float64
+      result: "per band: MultiPolygon (geo-types), float64"
+      assembly: "full: polygons with holes"
+      differences:
+        - {what: "pixel-is-area: polygons extend half a cell beyond the outer pixel centres", direction: favours_isosweep,
+           measured_by: clipped_area, bound: "clipped area <= 1% of the domain"}
+    evidence: ["https://docs.rs/contour/0.13.1/contour/struct.ContourBuilder.html#method.isobands"]
+
+report_tools:
+  # ---- 2D contour lines ----
+  isosweep_1t:
+    label: "isosweep (1 thread)"
+    adapter: isosweep_contour
+    variants: [{id: binding_1t, params: {nthreads: 1}, engine: sweep4, max_threads: 1}]
+  isosweep_mt:
+    label: "isosweep (best thread count)"
+    adapter: isosweep_contour
+    variants: [{id: binding_mt, params: {nthreads: {sweep: threads}}, engine: sweep4}]
+  isosweep_c_1t:
+    label: "isosweep C library (1 thread)"
+    adapter: isosweep_c_worker
+    variants: [{id: capi_1t, params: {mode: lines, nthreads: 1}, engine: sweep4, max_threads: 1}]
+  isosweep_c_mt:
+    label: "isosweep C library (best thread count)"
+    adapter: isosweep_c_worker
+    variants: [{id: capi_mt, params: {mode: lines, nthreads: {sweep: threads}}, engine: sweep4}]
+  isosweep_c_bands_1t:
+    label: "isosweep C library filled (1 thread)"
+    adapter: isosweep_c_bands_worker
+    variants: [{id: capi_bands_1t, params: {mode: bands, nthreads: 1}, engine: sweep4, max_threads: 1}]
+  isosweep_c_bands_mt:
+    label: "isosweep C library filled (best thread count)"
+    adapter: isosweep_c_bands_worker
+    variants: [{id: capi_bands_mt, params: {mode: bands, nthreads: {sweep: threads}}, engine: sweep4}]
+  isosweep_1t_f64:
+    label: "isosweep (1 thread, float64 coordinates)"
+    adapter: isosweep_contour
+    variants: [{id: binding_1t_f64, params: {nthreads: 1, coords: float64}, engine: sweep4, max_threads: 1}]
+  contourpy_serial:
+    label: "ContourPy (serial)"
+    adapter: contourpy
+    select: fastest_variant
+    variants:
+      - {id: serial, params: {name: serial, line_type: ChunkCombinedOffset}, max_threads: 1}
+      - {id: serial_reused, params: {name: serial, line_type: ChunkCombinedOffset, reuse_generator: true}, max_threads: 1}
+  contourpy_threaded:
+    label: "ContourPy (threaded, best threads × chunks)"
+    adapter: contourpy
+    select: fastest_variant
+    variants:
+      - {id: threaded, params: {name: threaded, line_type: ChunkCombinedOffset,
+         thread_count: {sweep: threads}, chunk_count: {sweep: [4, 8, 16]}}}
+      - {id: threaded_reused, params: {name: threaded, line_type: ChunkCombinedOffset, reuse_generator: true,
+         thread_count: {sweep: threads}, chunk_count: {sweep: [4, 8, 16]}}}
+    waivers:
+      - check: W2_unjoined_ends
+        direction: favours_competitor
+        max_rel: 20.0
+        justification: "Threaded ContourPy returns lines split at chunk boundaries (no cross-chunk joining): less assembly work than the other tools. Grows with chunk count x line length (measured locally: 0.5 to 12 extra lines per reference line)."
+      - check: W2_feature_count
+        direction: favours_competitor
+        max_rel: 20.0
+        justification: "Same cause: lines split at chunk boundaries."
+  vtk_fe2d_1t:
+    label: "VTK Flying Edges (1 thread)"
+    adapter: vtk_flying_edges_2d
+    variants: [{id: sequential, params: {backend: Sequential}, max_threads: 1}]
+    waivers: &vtk_count
+      - check: W2_unjoined_ends
+        direction: favours_competitor
+        max_rel: 0.5
+        justification: "vtkStripper leaves polylines unjoined (measured locally: 8 of 1895 lines on gfs-mslp, 30 of 803 on dem-tile-512, 36 of 92 on meteo-isobar-forecast): less assembly work than full joining."
+      - check: W2_feature_count
+        direction: favours_competitor
+        max_rel: 0.5
+        justification: "Same cause: unjoined polylines."
+  vtk_fe2d_mt:
+    label: "VTK Flying Edges (best SMP backend × threads)"
+    adapter: vtk_flying_edges_2d
+    variants: [{id: smp, params: {backend: {sweep: smp_backends}, threads: {sweep: threads}}}]
+    waivers: *vtk_count
+  gdal_3.13:
+    label: "GDAL 3.13.3"
+    adapter: gdal_worker
+    select: fastest_variant
+    variants:
+      - {id: cg_callback, params: {lib: "3.13.3", api: callback}, max_threads: 1}
+      - {id: generate_ex, params: {lib: "3.13.3", api: generate_ex}, max_threads: 1}
+  gdal_master:
+    label: "GDAL 3.14-dev (master)"
+    adapter: gdal_worker
+    select: fastest_variant
+    variants:
+      - {id: cg_callback, params: {lib: master, api: callback}, max_threads: 1}
+      - {id: generate_ex, params: {lib: master, api: generate_ex}, max_threads: 1}
+  contour_rs:
+    label: "contour-rs (Rust)"
+    adapter: contour_rs_worker
+    variants: [{id: lines, params: {mode: lines}, max_threads: 1}]
+  skimage:
+    label: "scikit-image find_contours"
+    adapter: skimage_find_contours
+    variants: [{id: per_level, params: {}, max_threads: 1}]
+  # ---- filled bands ----
+  isosweep_bands_1t:
+    label: "isosweep filled (1 thread)"
+    adapter: isosweep_filled
+    variants: [{id: filled_1t, params: {nthreads: 1}, engine: sweep4, max_threads: 1}]
+  isosweep_bands_mt:
+    label: "isosweep filled (best thread count)"
+    adapter: isosweep_filled
+    variants: [{id: filled_mt, params: {nthreads: {sweep: threads}}, engine: sweep4}]
+  contourpy_filled_serial:
+    label: "ContourPy filled (serial)"
+    adapter: contourpy_filled
+    select: fastest_variant
+    variants:
+      - {id: serial, params: {name: serial, fill_type: OuterOffset}, max_threads: 1}
+      - {id: serial_reused, params: {name: serial, fill_type: OuterOffset, reuse_generator: true}, max_threads: 1}
+  contourpy_filled_threaded:
+    label: "ContourPy filled (threaded, best threads × chunks)"
+    adapter: contourpy_filled
+    select: fastest_variant
+    variants:
+      - {id: threaded, params: {name: threaded, fill_type: ChunkCombinedOffsetOffset,
+         thread_count: {sweep: threads}, chunk_count: {sweep: [4, 8, 16]}}}
+      - {id: threaded_reused, params: {name: threaded, fill_type: ChunkCombinedOffsetOffset, reuse_generator: true,
+         thread_count: {sweep: threads}, chunk_count: {sweep: [4, 8, 16]}}}
+    waivers:
+      - check: B2_band_polygons
+        direction: favours_competitor
+        max_rel: 20.0
+        justification: "Threaded ContourPy splits polygons at chunk boundaries (no cross-chunk assembly): more, smaller polygons and less assembly work than the other tools (measured locally: up to 13 pieces per reference polygon)."
+      - check: B1_band_points
+        direction: favours_competitor
+        max_rel: 0.5
+        justification: "Same cause: the chunk seams add vertices that are not contour crossings."
+      - check: B3_accuracy
+        direction: favours_competitor
+        max_rel: 0.3
+        justification: "Same cause: seam vertices lie on chunk boundaries, not at crossings (measured locally: 0.1-24% of vertices)."
+  gdal_bands_3.13:
+    label: "GDAL 3.13.3 polygonize"
+    adapter: gdal_worker_polygonize
+    variants: [{id: polygonize, params: {lib: "3.13.3", api: polygonize}, max_threads: 1}]
+    waivers:
+      - check: B1_total_area
+        direction: favours_competitor
+        max_rel: 1.0e-6
+        justification: "GDAL's polygonize leaves area unassigned where all four corners of a cell lie exactly on a level (hrrr-mslp: 115 such cells, about 1 cell² of 1.9 million unassigned): less output, so it favours GDAL; bounded at 1e-6 of the domain."
+  gdal_bands_master:
+    label: "GDAL 3.14-dev (master) polygonize"
+    adapter: gdal_worker_polygonize
+    variants: [{id: polygonize, params: {lib: master, api: polygonize}, max_threads: 1}]
+    waivers:
+      - check: B1_total_area
+        direction: favours_competitor
+        max_rel: 1.0e-6
+        justification: "GDAL's polygonize leaves area unassigned where all four corners of a cell lie exactly on a level (hrrr-mslp: 115 such cells, about 1 cell² of 1.9 million unassigned): less output, so it favours GDAL; bounded at 1e-6 of the domain."
+  contour_rs_bands:
+    label: "contour-rs isobands (Rust)"
+    adapter: contour_rs_bands_worker
+    variants: [{id: isobands, params: {mode: isobands}, max_threads: 1}]
+    waivers:
+      - check: B2_band_polygons
+        direction: favours_competitor
+        max_rel: 3.0
+        justification: "contour-rs builds each band as the >= lower-level regions with the >= upper-level regions as holes, without splitting a region a hole touches at the raster edge or a vertex: fewer polygons, less assembly than the other tools (areas agree, B1)."
+  # ---- 3D isosurfaces (not published; internal) ----
+  isosweep_iso_1t:
+    label: "isosweep isosurface (1 thread)"
+    adapter: isosweep_isosurface
+    variants: [{id: binding_1t, params: {nthreads: 1}, engine: mc, max_threads: 1}]
+  isosweep_iso_mt:
+    label: "isosweep isosurface (best thread count)"
+    adapter: isosweep_isosurface
+    variants: [{id: binding_mt, params: {nthreads: {sweep: threads_min2}}, engine: mc_sweep}]
+  vtk_fe3d_1t:
+    label: "VTK Flying Edges 3D (1 thread)"
+    adapter: vtk_flying_edges_3d
+    variants: [{id: sequential, params: {backend: Sequential}, max_threads: 1}]
+  vtk_fe3d_mt:
+    label: "VTK Flying Edges 3D (best SMP backend × threads)"
+    adapter: vtk_flying_edges_3d
+    variants: [{id: smp, params: {backend: {sweep: smp_backends}, threads: {sweep: threads}}}]
+  pymcubes:
+    label: "PyMCubes"
+    adapter: pymcubes
+    variants: [{id: default, params: {}, max_threads: 1}]

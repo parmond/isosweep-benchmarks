@@ -1,0 +1,12 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: gmrt-bathy
+title: Mid-Atlantic Ridge multibeam bathymetry (GMRT)
+kind: contour2d
+use_case: dem-contours
+published: true
+data: {dataset: gmrt_mar_filled.tif, sha256: 377461fd5c5d4c459928c3cc10507750868f02751fd35595a082d9c060cf386c}
+levels: {interval: 100}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 100 m
+data_label: GMRT GridServer, Global Multi-Resolution Topography (Ryan et al. 2009); 0.15% voids filled

@@ -1,0 +1,15 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: hrrr-t2m
+title: HRRR 3 km CONUS 2 m temperature (isotherms)
+kind: contour2d
+use_case: weather-climate
+published: true
+data:
+  dataset: hrrr_t2m.f32
+  sha256: ba1c7d82994be32999acd2f862fe029472823e94ce41b29971580eb8032f3880
+  raw_shape: [1059, 1799]
+levels: {interval: 1}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 1 °C
+data_label: NOAA HRRR 2026-11-18 00z, TMP 2 m (NOAA Open Data Dissemination)

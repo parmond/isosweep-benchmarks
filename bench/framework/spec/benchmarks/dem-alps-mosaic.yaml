@@ -1,0 +1,12 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: dem-alps-mosaic
+title: Copernicus 30 m DEM, Alps 2°×2° mosaic
+kind: contour2d
+use_case: dem-contours
+published: true
+data: {dataset: alps_7200.tif, sha256: 100f6bd14a1fd4eb92a191438ef25569b4904e682f7e3a2597abb0a6e19250a5}
+levels: {interval: 50}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 50 m
+data_label: Copernicus GLO-30 DEM tiles N45–46 E007–008 (© DLR/Airbus, provided under COPERNICUS by the EU and ESA)

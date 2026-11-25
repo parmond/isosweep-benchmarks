@@ -1,0 +1,12 @@
+{
+ "source_tree_hash": "dedef444b287a6ff18f25bcccb2e0d12f49192df0f6dd3cff777a75dde3efb78",
+ "git": {
+  "available": true,
+  "head": "5c36fc85b4a909fa07f218665a8896877a8dbe28",
+  "dirty_tree_files": [],
+  "clean": true
+ },
+ "profile": "reference",
+ "instance_type": "c7i.metal-24xl",
+ "launched_at": "2026-11-22T15:00:20+0100"
+}

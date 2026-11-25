@@ -1,0 +1,6 @@
+build/
+data/
+runs/
+__pycache__/
+*.pyc
+bench/framework/workers/rs_worker/target/

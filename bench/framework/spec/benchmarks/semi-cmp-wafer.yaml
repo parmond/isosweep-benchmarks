@@ -1,0 +1,12 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: semi-cmp-wafer
+title: CMP wafer thickness many-level
+kind: contour2d
+use_case: semiconductor
+published: true
+data: {generator: fieldgen, profile: semi_cmp, size: 1024, seed: 42}
+levels: {count: 50}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Industry testcase from bench/testcases/semi-cmp-wafer.md (deterministic synthetic field).
+levels_label: 50 levels
+data_label: deterministic synthetic field 'semi_cmp' (bench/testcases/catalog.tsv)

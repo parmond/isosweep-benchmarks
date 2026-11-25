@@ -1,0 +1,15 @@
+# Benchmark spec — see ../global.yaml for the policy this inherits.
+id: gfs-mslp
+title: GFS 0.25° global sea-level pressure (isobars)
+kind: contour2d
+use_case: weather-climate
+published: true
+data:
+  dataset: gfs_prmsl.f32
+  sha256: 9a9b5e02ef419a122bdedde676c36b4ad037f639ec36233f8a0cea04a4f4cedb
+  raw_shape: [721, 1440]
+levels: {interval: 400}
+tools: [isosweep_1t, isosweep_1t_f64, isosweep_mt, isosweep_c_1t, isosweep_c_mt, gdal_master, gdal_3.13, vtk_fe2d_1t, vtk_fe2d_mt, contourpy_serial, contourpy_threaded, skimage]
+rationale: Real third-party data; provenance in bench/competitors/landscape/DATASETS.md.
+levels_label: every 4 hPa
+data_label: NOAA GFS 2026-11-18 00z analysis, PRMSL (NOAA Open Data Dissemination)
