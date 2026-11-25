@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /*
  * fieldgen_prng.h — Deterministic PRNG for test-case field generation.
  *

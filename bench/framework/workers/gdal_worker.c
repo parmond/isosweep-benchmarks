@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /* gdal_worker — GDAL contour engine under the isobench worker protocol.
  *
  * Protocol (one command per stdin line, one reply per stdout line):

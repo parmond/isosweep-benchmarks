@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Result store: every (benchmark, configuration) is measured once per code,
 data, method and machine, and reused by later runs while none of these
 changed (R13). Competitors do not change between our releases; re-measuring

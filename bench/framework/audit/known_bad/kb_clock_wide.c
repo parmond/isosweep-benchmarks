@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /* Known-bad native worker: the clock starts before untimed-looking work
    (file I/O outside the markers is still inside the measured region). */
 #include <stdio.h>

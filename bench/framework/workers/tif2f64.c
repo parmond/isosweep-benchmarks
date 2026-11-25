@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /* tif2f64 — read one band of any GDAL raster as row-major float64 LE.
  * Lets the benchmark node turn GeoTIFF/GRIB inputs into the raw fields the
  * landscape runner feeds every tool, without GDAL Python bindings.

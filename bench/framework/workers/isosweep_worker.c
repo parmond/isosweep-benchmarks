@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /* isosweep_worker — libisosweep's C API under the isobench worker protocol, so
  * the library a C licensee links can be measured C to C (as GDAL's C API is),
  * without the Python binding (design B10).

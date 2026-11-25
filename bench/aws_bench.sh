@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 # aws_bench.sh — Orchestrate benchmark runs on AWS instances.
 #
 # Provisions ephemeral instances, deploys code, tunes system,

@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Environment description and environment-class checks (reference/preflight)."""
 import os
 import platform

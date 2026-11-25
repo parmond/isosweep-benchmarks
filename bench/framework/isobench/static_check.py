@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Static check of what runs inside the timed region.
 
 Python adapters: every call in compute() must match the adapter's

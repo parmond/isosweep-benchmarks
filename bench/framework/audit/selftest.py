@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Auditor self-test: known-bad cases the conformance audit MUST reject.
 
     selftest.py --baseline RESULTS_DIR [--live] [--out selftest.json]

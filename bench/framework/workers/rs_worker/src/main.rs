@@ -1,3 +1,5 @@
+// Copyright 2026 Parmond AB
+// SPDX-License-Identifier: Apache-2.0
 // rs_worker — Rust `contour` crate (contour-rs) under the isobench worker protocol.
 //   LOAD <field.f64> <nx> <ny> <levels_csv> <mode: lines> -> OK
 //   RUN <loops> <markers 0|1> -> TIME <wall_ns> <cpu_ns> <majflt> <min_ns> <max_ns>

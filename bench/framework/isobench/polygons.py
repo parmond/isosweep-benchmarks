@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Filled-band output (class polygons.bands): summaries and like-for-like checks.
 
 Every tool's raw output — polygons (exterior + holes) per band, in the tool's

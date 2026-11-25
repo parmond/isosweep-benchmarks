@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 # run_node.sh PROFILE — run the framework on the node: harness, then (preflight)
 # the live auditor self-test, then the conformance audit. Results: ~/fw_results
 set -euo pipefail

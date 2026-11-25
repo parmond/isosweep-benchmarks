@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Tool adapters — the three-phase contract every measured tool implements.
 
   prepare(z, levels, field_path)  untimed: load / convert / wrap input, build O(1) objects

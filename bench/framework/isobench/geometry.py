@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Output summaries (computed untimed) and like-for-like checks (W1-W3, R4).
 
 Every tool's raw output — polylines in the tool's own coordinate frame — goes

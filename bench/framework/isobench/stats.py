@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Summary statistics and the confidence interval of a speed ratio.
 
 The ratio CI is distribution-free (R9): Hodges–Lehmann estimate of the shift

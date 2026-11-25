@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 # isosweep benchmark harness. `make fieldgen` builds the deterministic field
 # generator for the synthetic benchmarks (the same flags as the reference
 # runs, so the fields are bit-identical on the same platform).

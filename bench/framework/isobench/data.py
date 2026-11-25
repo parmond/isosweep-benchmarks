@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Benchmark inputs: fields and levels, with integrity hashes.
 
 All file reading happens here, before any timed region. Real datasets are

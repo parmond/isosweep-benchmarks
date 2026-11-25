@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Live strace fixtures: one action between ISOBENCH markers. Usage: kb_dynamic.py CASE TMPFILE"""
 import concurrent.futures
 import gc

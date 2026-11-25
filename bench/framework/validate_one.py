@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Run ONE configuration's compute() between ISOBENCH markers (for strace).
 
 Started by run.py under `strace -f -y`. Everything before the first marker

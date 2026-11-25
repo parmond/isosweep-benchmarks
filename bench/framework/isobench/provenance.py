@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Source provenance: the exact file set a run is built from, its hash, git state.
 
 TREE defines the deployable source tree. The same list drives (a) the rsync

@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /* Known-bad native worker fragment: file I/O inside the timed block. */
 #include <stdio.h>
 int main(int argc, char **argv) {

@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Known-bad adapters for the auditor self-test. NEVER referenced by the real spec."""
 import numpy as np
 

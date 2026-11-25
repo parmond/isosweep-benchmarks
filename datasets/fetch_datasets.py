@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Fetch and prepare the real datasets of the benchmark suite, then verify them.
 
     python3 datasets/fetch_datasets.py [--out data] [--only NAME,...] [--keep-raw]

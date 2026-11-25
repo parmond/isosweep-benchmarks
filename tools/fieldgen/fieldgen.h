@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /*
  * fieldgen.h — Deterministic test-case scalar field generator.
  *

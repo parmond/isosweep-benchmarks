@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 # tune_cpu.sh — Configure Linux system for reproducible benchmarking.
 #
 # Run as root on the benchmark instance. Sets deterministic CPU state:

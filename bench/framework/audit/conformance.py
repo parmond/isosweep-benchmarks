@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Audit 1 — conformance: does a run do exactly what the spec says?
 
     conformance.py RESULTS_DIR [--preflight PREFLIGHT_DIR] [--out attestation.json]

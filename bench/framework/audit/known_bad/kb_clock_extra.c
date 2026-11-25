@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /* Known-bad native worker: markers are bracketed correctly, but a second clock
    read elsewhere defines the region that is actually reported. */
 #include <time.h>

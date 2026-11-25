@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Admit a finished run's records into the result store (isobench/store.py).
 
     store_admit.py RESULTS_DIR [--store DIR] [--preflight DIR] [--data-dir DIR]

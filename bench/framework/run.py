@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """isobench harness — runs the benchmarks exactly as the spec defines them.
 
     run.py --profile reference|preflight|indicative --out DIR

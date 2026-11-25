@@ -1,3 +1,5 @@
+/* Copyright 2026 Parmond AB
+ * SPDX-License-Identifier: Apache-2.0 */
 /*
  * fieldgen — write a deterministic synthetic benchmark field as raw row-major
  * float64 little-endian (n x n), byte-identical to the former

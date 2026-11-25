@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Spec loading, strict validation and hashing.
 
 The spec (bench/framework/spec/) is the single definition of every benchmark.

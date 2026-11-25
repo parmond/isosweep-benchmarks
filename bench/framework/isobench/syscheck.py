@@ -1,3 +1,5 @@
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Dynamic check: nothing but computation inside the timed region (allowlist, R6).
 
 A validation process (validate_one.py) runs one compute() between two marker

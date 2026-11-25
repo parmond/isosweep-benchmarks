@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 """Pre-launch gate for reference runs (the pre-flight rule).
 
     gate.py [--preflight-root bench/results/framework/preflight]

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright 2026 Parmond AB
+# SPDX-License-Identifier: Apache-2.0
 # setup_ubuntu.sh — provision an Ubuntu 24.04 node for the isobench framework.
 #
 # Build mode (preflight): pinned GDAL 3.13.3 + GDAL master@commit (identical
