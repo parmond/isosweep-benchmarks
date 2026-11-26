@@ -36,6 +36,10 @@ GMRT = ("https://www.gmrt.org/services/GridServer?minlongitude=-46&maxlongitude=
         "&maxlatitude=30&format=geotiff&resolution=high&layer=topo")
 GFS = "https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20261118/00/atmos/gfs.t00z.pgrb2.0p25.f000"
 HRRR = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20261118/conus/hrrr.t00z.wrfsfcf00.grib2"
+# sha256 of the decoded field (float64, row-major) as recorded in the published
+# results (measurements.jsonl, data.field_sha256), for files whose bytes depend
+# on the server's encoding: same values = the same benchmark input
+FIELD_SHA = {"gmrt_mar_filled.tif": "0afdb1ffceeed8dc9b58c24b74b0bf4a1c441ca85531a2c9f63ed872b0c9dadf"}
 
 
 def manifest():
@@ -56,7 +60,7 @@ def sha256(path):
 
 
 def get(url, dest, byte_range=None):
-    if os.path.exists(dest) and not byte_range:
+    if os.path.exists(dest) and os.path.getsize(dest) > 0 and not byte_range:
         return dest
     req = urllib.request.Request(url, headers={"User-Agent": "isosweep-benchmarks/1.0"})
     if byte_range:
@@ -68,6 +72,9 @@ def get(url, dest, byte_range=None):
             if not b:
                 break
             f.write(b)
+    if os.path.getsize(tmp) == 0:
+        os.remove(tmp)
+        raise SystemExit(f"empty response from {url}; the server may be busy, try again later")
     os.replace(tmp, dest)
     return dest
 
@@ -109,6 +116,18 @@ def values_sha(path):
     tmp = path + ".values.f32"
     run(["gdal_translate", "-q", "-ot", "Float32", "-of", "ENVI", path, tmp])
     h = hashlib.sha256(np.fromfile(tmp, dtype="<f4").tobytes()).hexdigest()
+    for p in (tmp, tmp + ".hdr", os.path.splitext(tmp)[0] + ".hdr", tmp + ".aux.xml"):
+        if os.path.exists(p):
+            os.remove(p)
+    return h
+
+
+def field_sha(path):
+    """sha256 of the raster's values as float64 (the harness's field fingerprint)."""
+    import numpy as np
+    tmp = path + ".field.f64"
+    run(["gdal_translate", "-q", "-ot", "Float64", "-of", "ENVI", path, tmp])
+    h = hashlib.sha256(np.fromfile(tmp, dtype="<f8").tobytes()).hexdigest()
     for p in (tmp, tmp + ".hdr", os.path.splitext(tmp)[0] + ".hdr", tmp + ".aux.xml"):
         if os.path.exists(p):
             os.remove(p)
@@ -175,6 +194,12 @@ def main():
         got = sha256(path)
         if got == want[name]:
             print(f"  ok        {got}")
+        elif name in FIELD_SHA and field_sha(path) == FIELD_SHA[name]:
+            bad += 1
+            print(f"  VALUES OK, BYTES DIFFER  {got}\n"
+                  f"            the values are identical to the published benchmark field (fingerprint\n"
+                  f"            {FIELD_SHA[name][:16]}...), but the server now encodes the file differently;\n"
+                  f"            the harness checks file bytes, so this dataset's benchmarks will refuse it")
         else:
             bad += 1
             print(f"  MISMATCH  {got} (expected {want[name]}); decoded values sha256 {values_sha(path)}")

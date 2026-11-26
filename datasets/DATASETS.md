@@ -26,10 +26,11 @@ generated on the fly by `tools/fieldgen` (deterministic, from a seed).
 
 ## Reproducibility
 
-`cop_N46E007.tif` is used as downloaded and the four `.f32` files are decoded
-values, so they should match byte for byte. `alps_7200.tif` and
-`gmrt_mar_filled.tif` are written GeoTIFFs: another GDAL or zlib version may
-write different bytes for the same values, and the GMRT service can update its
-synthesis. `fetch_datasets.py` then prints the checksum of the decoded values
-as well, so a file-format difference can be told apart from a data
-difference.
+Tested in November 2026 with GDAL 3.13.3: six of the seven files rebuild byte
+for byte from their public sources, including the Alps mosaic. The GMRT grid
+rebuilds with values identical to the published benchmark field (its field
+fingerprint in the results matches), but the GMRT service now encodes the
+GeoTIFF differently, so its file checksum differs and the harness refuses it
+for `gmrt-bathy`. `fetch_datasets.py` reports this case as "VALUES OK, BYTES
+DIFFER". A future revision of the benchmark specifications will pin the
+decoded values instead of the file bytes for this dataset.
